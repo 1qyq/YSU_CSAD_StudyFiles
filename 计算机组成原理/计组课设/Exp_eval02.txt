@@ -1,0 +1,148 @@
+$P 00 C2;	LP2:LAD R2 D1
+$P 01 D1
+$P 02 C8
+$P 03 00;	LAD R0, [R2], 00
+$P 04 72;	INC R2
+$P 05 D2
+$P 06 D1;	STA R2, D1
+$P 07 63
+$P 08 FF;	LDI R3, FF
+$P 09 83;	SUB R3, R0 ; 此处不会有进位
+$P 0A 9F;	OR R3, R3
+$P 0B F0
+$P 0C 65;	BZC valueend
+$P 0D 63
+$P 0E C9;	LDI R3, C9
+$P 0F 42;  MOV R2, R0
+$P 10 8C;	SUB R0, R3
+$P 11 48; MOV R0, R2
+$P 12 F0
+$P 13 16;	BZC pushnum
+$P 14 E0
+$P 15 1F;	JMP calculate
+$P 16 C2;	pushnum:LAD R2, D2
+$P 17 D2
+$P 18 D8
+$P 19 00;	STA R0, [R2], 00
+$P 1A 72;	INC R2
+$P 1B D2
+$P 1C D2;	STA R2, D2
+$P 1D E0
+$P 1E 00;	JMP LP2
+$P 1F D0;	calculate:STA R0, D3 ; 复制当前符号到D3
+$P 20 D3
+$P 21 C2
+$P 22 D2;	LAD R2, D2
+$P 23 60
+$P 24 01;	LDI R0, 01
+$P 25 82;	SUB R2, R0
+$P 26 C9
+$P 27 00;	LAD R1, [R2], 00 ; R1为栈顶元素
+$P 28 60
+$P 29 01;	LDI R0, 01
+$P 2A 82;	SUB R2, R0
+$P 2B CB
+$P 2C 00;	LAD R3, [R2], 00; R3为次栈顶元素
+$P 2D D2
+$P 2E D2;	STA R2, D2 ; 栈顶指针放回D2
+$P 2F C0
+$P 30 D3;	LAD R0, D3 ; R0为当前元素
+$P 31 62
+$P 32 CC;	LDI R2, CC
+$P 33 D1
+$P 34 D3;	STA R1, D3 ; 将栈顶元素放入D3
+$P 35 82;	SUB R2, R0
+$P 36 71;	INC R1
+$P 37 9A;	OR R2, R2
+$P 38 F0
+$P 39 4D;	BZC addnum
+$P 3A 62
+$P 3B CD;	LDI R2, CD
+$P 3C 82;	SUB R2, R0
+$P 3D 71;	INC R1
+$P 3E 9A;	OR R2, R2
+$P 3F F0
+$P 40 52;	BZC subnum
+$P 41 62
+$P 42 CE;	LDI R2, CE
+$P 43 82;	SUB R2, R0
+$P 44 71;	INC R1
+$P 45 9A;	OR R2, R2
+$P 46 F0
+$P 47 57;	BZC andnum
+$P 48 C1
+$P 49 D3;	LAD R1, D3 ;将栈顶元素取回
+$P 4A 97;	OR R3, R1
+$P 4B E0
+$P 4C 5C;	JMP pushagain
+$P 4D C1;	addnum:LAD R1, D3 ;将栈顶元素取回
+$P 4E D3
+$P 4F 07;	ADD R3, R1
+$P 50 E0
+$P 51 5C;	JMP pushagain
+$P 52 C1;	subnum:LAD R1, D3 ;将栈顶元素取回
+$P 53 D3
+$P 54 87;	SUB R3, R1
+$P 55 E0
+$P 56 5C;	JMP pushagain
+$P 57 C1;	andnum:LAD R1, D3 ;将栈顶元素取回
+$P 58 D3
+$P 59 17;	AND R3, R1
+$P 5A E0
+$P 5B 5C;	JMP pushagain
+$P 5C C2;	pushagain:LAD R2, D2
+$P 5D D2
+$P 5E DB
+$P 5F 00;	STA R3, [R2], 00
+$P 60 72;	INC R2
+$P 61 D2
+$P 62 D2;	STA R2, D2
+$P 63 E0
+$P 64 00;	JMP LP2
+$P 65 C2;	valueend:LAD R2, D2
+$P 66 D2
+$P 67 61; LDI R1, 01
+$P 68 01
+$P 69 86; SUB R2, R1 
+$P 6A C8
+$P 6B 00;	LAD R0, [R2], 00
+$P 6C 30
+$P 6D 40;	OUT 40, R0
+$P 6E 50;	HLT
+
+;后缀表达式(14H)32+2|-54&-$ 结果:09
+;$P E0 14
+;$P E1 03
+;$P E2 02
+;$P E3 CC
+;$P E4 02
+;$P E5 CF
+;$P E6 CD
+;$P E7 05
+;$P E8 04
+;$P E9 CE
+;$P EA CD
+;$P EB FF
+
+; 42-53&-
+;$P E0 04
+;$P E1 02
+;$P E2 CD
+;$P E3 05
+;$P E4 03
+;$P E5 CE
+;$P E6 CD
+;$P E7 FF
+
+;四个内存中间区
+$P D0 F0
+$P D1 E0
+$P D2 D4
+$P D3 00
+; 符号优先级
+$P CA 00
+$P CB 00
+$P CC 01
+$P CD 01
+$P CE 02
+$P CF 02

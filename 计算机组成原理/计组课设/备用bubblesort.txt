@@ -1,0 +1,122 @@
+  $P 00 21;IN R1,	00h     输入到R1中
+  $P 01 00
+  
+  $P 02 D1;STA R1,	90H;    保存内循环次数
+  $P 03 90
+  
+  $P 04 D1;STA R1, 8FH;		保存外循环次数
+  $P 05 8F
+  
+  $P 06 62;LDI R2, 91H;     给R2赋地址值91
+  $P 07 91
+  
+  $P 08 C8;NLOOP: LAD R0, [R2];R0存第一个数
+  $P 09 00
+  
+  $P 0A 72;INC R2
+  
+  $P 0B C9;LAD R1, [R2];    R1存第二个数
+  $P 0C 00
+  
+  $P 0D 81;SUB R1, R0;      R1 - R0 比较两数大小
+  
+  $P 0E F0;BZC XCHG;			当R0 >= R1
+  $P 0F 2A
+  
+  $P 10 C3;NNLOOP: LAD R3,	[90H];		比较和交换后，继续内循环次数--
+  $P 11 90
+  
+  $P 12 61;LDI	R1,	1;      给R1赋值1
+  $P 13 01
+  
+  $P 14 87;SUB	R3, R1;     R3--
+  
+  $P 15 D3;STA    R3, 90H;  内循环--后放在90
+  $P 16 90
+
+  $P 17 F0;BZC OUT;			找到最大值显示
+  $P 18 36
+  
+  $P 19 E0;JMP NLOOP;       没找到最大值继续循环
+  $P 1A 08
+  
+  $P 1B C2;WLOOP:LAD R2, [8FH];		找到最大值后外循环次数--
+  $P 1C 8F
+  
+  $P 1D 61;LDI R1, 1
+  $P 1E 01
+  
+  $P 1F 86;SUB R2, R1;      R2 - R1,R2--
+  
+  $P 20 F0;BZC	EXIT;       外循环结束,HLT
+  $P 21 3C
+  
+  $P 22 D2;STA R2, 8FH;     给内循环8F
+  $P 23 8F
+
+  $P 24 D2;STA	R2, 90H;    给外循环90
+  $P 25 90
+  
+  $P 26 62;                 给R2赋地址值91
+  $P 27 91
+  
+  $P 28 E0;JMP	NLOOP;		外循环没结束，继续内层循环
+  $P 29 08
+
+  $P 2A CB;XCHG: LAD R3, [RI];  R3存放小的数值R1
+  $P 2B 00
+
+  $P 2C D8;STA	R0, [RI];    R0大数放在后面
+  $P 2D 00
+
+  $P 2E 60;LDI	R0, 1
+  $P 2F 01
+
+  $P 30 82;SUB R2, R0; R2 - R0; R2--存放小数
+  
+  $P 31 DB;STA R3, [RI];     R3小数放前面
+  $P 32 00
+  
+  $P 33 72;INC R2;           R2指向大数
+  
+  $P 34 E0;JMP	NNLOOP;      继续后续比较
+  $P 35 10
+  
+  $P 36 CB;OUT:LAD R3, [RI]; 显示器显示最大值，保存当前指针
+  $P 37 00
+  
+  $P 38 3C;OUT	40H, R3
+  $P 39 40
+  
+  $P 3A E0;JMP WLOOP
+  $P 3B 1B
+  
+
+
+  $P 3C 62;EXIT,LDI R2, 91
+  $P 3D 91
+  $P 3E C8;LAD R0,[RI],00
+  $P 3F 00
+  
+  $P 40 30
+  $P 41 40
+  
+  $P 42 50;HLT
+
+
+  
+  $P 91 02
+  $P 92 01
+  $P 93 03
+  $P 94 04
+  $P 95 05
+  $P 96 06
+  $P 97 07
+  $P 98 08
+  $P 99 09
+  $P 9A 0A
+  $P 9B 0B
+  $P 9C 0C
+  $P 9D 0D
+  $P 9E 0E
+  $P 9F 0F
